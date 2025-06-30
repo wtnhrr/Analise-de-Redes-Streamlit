@@ -35,3 +35,9 @@ git clone https://github.com/seu-usuario/Analise-de-Redes-av2.git
 cd Analise-de-Redes-av2
 pip install -r requirements.txt
 streamlit run main.py
+```
+
+---
+
+Link Cloud:
+[Streamlit Cloud](https://streamlit.io/)
