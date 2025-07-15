@@ -31,7 +31,7 @@ Uma aplicação interativa desenvolvida com [Streamlit](https://streamlit.io/) q
 Clone o repositório e instale as dependências:
 
 ```bash
-git clone https://github.com/seu-usuario/Analise-de-Redes-av2.git
+git clone https://github.com/seu-usuario/Analise-de-Redes-Streamlit.git
 cd Analise-de-Redes-av2
 pip install -r requirements.txt
 streamlit run main.py
