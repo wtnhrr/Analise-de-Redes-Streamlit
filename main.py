@@ -75,7 +75,7 @@ def get_monster_with_disk_cache(monster_id):
 st.sidebar.header("🔍 Parâmetros de Busca")
 
 start_id = st.sidebar.number_input("ID inicial do monstro", min_value=1000, value=1000)
-end_id = st.sidebar.number_input("ID final do monstro", min_value=start_id, value=start_id + 50)
+end_id = st.sidebar.number_input("ID final do monstro", min_value=start_id, value=start_id + 100)
 
 nivel_min = st.sidebar.number_input("Level mínimo", min_value=1, value=1)
 nivel_max = st.sidebar.number_input("Level máximo", min_value=1, value=999)
@@ -88,8 +88,13 @@ filtro_raca = st.sidebar.selectbox("Raça", [''] + racas)
 filtro_tipo = st.sidebar.selectbox("Tipo", [''] + tipos)
 filtro_elemento = st.sidebar.selectbox("Elemento (fraqueza)", [''] + elementos)
 
-executar = st.sidebar.button("🔄 Gerar grafo")
-if not executar:
+if "executar" not in st.session_state:
+    st.session_state.executar = False
+
+if st.sidebar.button("🔄 Gerar grafo"):
+    st.session_state.executar = True
+
+if not st.session_state.executar:
     st.stop()
 
 
@@ -143,6 +148,7 @@ for count, monster_id in enumerate(range(start_id, end_id + 1)):
 
 st.success(f"Grafo montado com {G.number_of_nodes()} nós e {G.number_of_edges()} arestas.")
 
+st.session_state["grafo_final"] = G
 
 # TABELA DETALHADA DE MAPAS
 
@@ -223,23 +229,35 @@ if G.number_of_nodes() > 0:
     ax.set_ylabel('Frequência')
     st.pyplot(fig)
 
-    st.subheader("⭐ Centralidade dos Nós")
-    k = st.slider("Top-k nós", min_value=3, max_value=20, value=5)
-    opcao = st.selectbox("Centralidade:", ["Degree", "Closeness", "Betweenness", "Eigenvector"])
 
-    try:
-        if opcao == "Degree":
-            centralidade = nx.degree_centrality(G)
-        elif opcao == "Closeness":
-            centralidade = nx.closeness_centrality(G)
-        elif opcao == "Betweenness":
-            centralidade = nx.betweenness_centrality(G)
-        elif opcao == "Eigenvector":
-            centralidade = nx.eigenvector_centrality(G)
+# CENTRALIDADE DOS NÓS
 
-        df_central = pd.DataFrame(centralidade.items(), columns=['Nó', 'Centralidade'])
-        st.table(df_central.sort_values(by='Centralidade', ascending=False).head(k))
-    except nx.NetworkXException:
-        st.warning("Centralidade Eigenvector não convergiu.")
-else:
-    st.info("Nenhum dado para análise estatística.")
+with st.expander("⭐ Centralidade dos Nós", expanded=False):
+    # Use um form para conter sliders e botão
+    with st.form(key="form_centralidade"):
+        k = st.slider("Top‑k nós", min_value=3, max_value=20, value=5, key="central_k")
+        opcao = st.selectbox("Centralidade:", 
+                              ["Degree", "Closeness", "Betweenness", "Eigenvector"],
+                              key="central_opcao")
+        calcular = st.form_submit_button("🔄 Calcular Centralidade")
+
+    if calcular:
+        G_local = st.session_state.get("grafo_final", None)
+        if G_local is None:
+            st.warning("Grafo ainda não foi gerado. Use filtros e clique em 'Gerar grafo'.")
+        else:
+            try:
+                if opcao == "Degree":
+                    centralidade = nx.degree_centrality(G_local)
+                elif opcao == "Closeness":
+                    centralidade = nx.closeness_centrality(G_local)
+                elif opcao == "Betweenness":
+                    centralidade = nx.betweenness_centrality(G_local)
+                else:  # Eigenvector
+                    centralidade = nx.eigenvector_centrality(G_local)
+
+                df_central = pd.DataFrame(centralidade.items(), columns=["Nó","Centralidade"])
+                df_central = df_central.sort_values("Centralidade", ascending=False).head(k)
+                st.table(df_central)
+            except nx.NetworkXException:
+                st.warning("❌ Eigenvector não convergiu.")
