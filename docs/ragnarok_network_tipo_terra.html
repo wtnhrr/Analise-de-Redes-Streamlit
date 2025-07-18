@@ -1,0 +1,273 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 750px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": "mob", "id": "fabre", "label": "fabre", "shape": "dot", "size": 10, "title": "Level: 6"}, {"font": {"color": "white"}, "group": "item", "id": "fluff", "label": "fluff", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "feather", "label": "feather", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "club", "label": "club", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "emerald", "label": "emerald", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "green_herb", "label": "green_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "clover", "label": "clover", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "fabre_card", "label": "fabre_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "red_plant", "label": "red_plant", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "yellow_plant", "label": "yellow_plant", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "black_mushroom", "label": "black_mushroom", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "red_mushroom", "label": "red_mushroom", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "wormtail", "label": "wormtail", "shape": "dot", "size": 10, "title": "Level: 17"}, {"font": {"color": "white"}, "group": "mob", "id": "vocal", "label": "vocal", "shape": "dot", "size": 10, "title": "Level: 18"}, {"font": {"color": "white"}, "group": "mob", "id": "mandragora", "label": "mandragora", "shape": "dot", "size": 10, "title": "Level: 13"}, {"font": {"color": "white"}, "group": "mob", "id": "muka", "label": "muka", "shape": "dot", "size": 10, "title": "Level: 23"}, {"font": {"color": "white"}, "group": "mob", "id": "green_plant", "label": "green_plant", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "pupa", "label": "pupa", "shape": "dot", "size": 10, "title": "Level: 4"}, {"font": {"color": "white"}, "group": "item", "id": "phracon", "label": "phracon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "chrysalis", "label": "chrysalis", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "sticky_mucus", "label": "sticky_mucus", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "guard", "label": "guard", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "shell", "label": "shell", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "iron_ore", "label": "iron_ore", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "pupa_card", "label": "pupa_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "andre", "label": "andre", "shape": "dot", "size": 10, "title": "Level: 33"}, {"font": {"color": "white"}, "group": "mob", "id": "willow", "label": "willow", "shape": "dot", "size": 10, "title": "Level: 8"}, {"font": {"color": "white"}, "group": "item", "id": "tree_root", "label": "tree_root", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "trunk", "label": "trunk", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "resin", "label": "resin", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "potato", "label": "potato", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "barren_trunk", "label": "barren_trunk", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "solid_trunk", "label": "solid_trunk", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "fine_grained_trunk", "label": "fine_grained_trunk", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "willow_card", "label": "willow_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "smokie", "label": "smokie", "shape": "dot", "size": 10, "title": "Level: 29"}, {"font": {"color": "white"}, "group": "mob", "id": "bigfoot", "label": "bigfoot", "shape": "dot", "size": 10, "title": "Level: 29"}, {"font": {"color": "white"}, "group": "mob", "id": "wolf", "label": "wolf", "shape": "dot", "size": 10, "title": "Level: 45"}, {"font": {"color": "white"}, "group": "item", "id": "emveretarcon", "label": "emveretarcon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "wolf_claw", "label": "wolf_claw", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "mantle", "label": "mantle", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "meat", "label": "meat", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "monster_s_feed", "label": "monster_s_feed", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "animal_skin", "label": "animal_skin", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "strawberry", "label": "strawberry", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "wolf_card", "label": "wolf_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "boa", "label": "boa", "shape": "dot", "size": 10, "title": "Level: 18"}, {"font": {"color": "white"}, "group": "mob", "id": "vagabond_wolf", "label": "vagabond_wolf", "shape": "dot", "size": 10, "title": "Level: 93"}, {"font": {"color": "white"}, "group": "mob", "id": "yoyo", "label": "yoyo", "shape": "dot", "size": 10, "title": "Level: 38"}, {"font": {"color": "white"}, "group": "item", "id": "green_live", "label": "green_live", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "stem", "label": "stem", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "spear", "label": "spear", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "shoot", "label": "shoot", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "four_leaf_clover", "label": "four_leaf_clover", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "gaia_whip", "label": "gaia_whip", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "mandragora_card", "label": "mandragora_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "blue_plant", "label": "blue_plant", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "white_plant", "label": "white_plant", "shape": "dot", "size": 10, "title": "Level: 1"}, {"font": {"color": "white"}, "group": "mob", "id": "orc_warrior", "label": "orc_warrior", "shape": "dot", "size": 10, "title": "Level: 44"}, {"font": {"color": "white"}, "group": "item", "id": "iron", "label": "iron", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "orcish_voucher", "label": "orcish_voucher", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rough_oridecon", "label": "rough_oridecon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "cigarette", "label": "cigarette", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "battle_axe", "label": "battle_axe", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "orcish_axe", "label": "orcish_axe", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "round_buckler", "label": "round_buckler", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "orc_warrior_card", "label": "orc_warrior_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "pointed_scale", "label": "pointed_scale", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "pike", "label": "pike", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yellow_herb", "label": "yellow_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "green_lace", "label": "green_lace", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "wormtail_card", "label": "wormtail_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "snake_scale", "label": "snake_scale", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "katana", "label": "katana", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "red_herb", "label": "red_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "venom_canine", "label": "venom_canine", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "shining_scale", "label": "shining_scale", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "snake_card", "label": "snake_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "rocker", "label": "rocker", "shape": "dot", "size": 10, "title": "Level: 15"}, {"font": {"color": "white"}, "group": "item", "id": "grasshopper_s_leg", "label": "grasshopper_s_leg", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "green_acre_guitar", "label": "green_acre_guitar", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "green_feeler", "label": "green_feeler", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "javelin", "label": "javelin", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "hinalle_leaflet", "label": "hinalle_leaflet", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rocker_doll", "label": "rocker_doll", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "hinalle", "label": "hinalle", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rocker_card", "label": "rocker_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "cactus_needle", "label": "cactus_needle", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "empty_bottle", "label": "empty_bottle", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "guisarme", "label": "guisarme", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "muka_card", "label": "muka_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "raccoon_leaf", "label": "raccoon_leaf", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "kitty_band", "label": "kitty_band", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "racoon_doll", "label": "racoon_doll", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "zargon", "label": "zargon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "zircon", "label": "zircon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "smokie_card", "label": "smokie_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yoyo_tail", "label": "yoyo_tail", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "banana", "label": "banana", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "cacao", "label": "cacao", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yoyo_doll", "label": "yoyo_doll", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yoyo_card", "label": "yoyo_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "bear_s_footskin", "label": "bear_s_footskin", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poo_poo_hat", "label": "poo_poo_hat", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "puppet", "label": "puppet", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "honey", "label": "honey", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "bigfoot_card", "label": "bigfoot_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "flower", "label": "flower", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poison_herb_rantana", "label": "poison_herb_rantana", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "ment", "label": "ment", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "romantic_flower", "label": "romantic_flower", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "blue_herb", "label": "blue_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poison_herb_nerium", "label": "poison_herb_nerium", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "mastela_fruit", "label": "mastela_fruit", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "grape", "label": "grape", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "romantic_leaf", "label": "romantic_leaf", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poison_herb_makulata", "label": "poison_herb_makulata", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "bitter_herb", "label": "bitter_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "aloe", "label": "aloe", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "aloe_leaflet", "label": "aloe_leaflet", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poison_herb_amoena", "label": "poison_herb_amoena", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "singing_plant", "label": "singing_plant", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "white_herb", "label": "white_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "deadly_noxious_herb", "label": "deadly_noxious_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poison_herb_seratum", "label": "poison_herb_seratum", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "alcohol", "label": "alcohol", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "detrimindexta", "label": "detrimindexta", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "dew_laden_moss", "label": "dew_laden_moss", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "crystal_blue", "label": "crystal_blue", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "mushroom_spore", "label": "mushroom_spore", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "poison_spore", "label": "poison_spore", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "karvodailnirol", "label": "karvodailnirol", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "red_blood", "label": "red_blood", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "orc_hero", "label": "orc_hero", "shape": "dot", "size": 10, "title": "Level: 50"}, {"font": {"color": "white"}, "group": "item", "id": "heroic_emblem", "label": "heroic_emblem", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "monkey_circlet", "label": "monkey_circlet", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "light_epsilon", "label": "light_epsilon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "shield", "label": "shield", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "orcish_sword", "label": "orcish_sword", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "elunium", "label": "elunium", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "giant_axe", "label": "giant_axe", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "orc_hero_card", "label": "orc_hero_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "sardonyx", "label": "sardonyx", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yggdrasilberry", "label": "yggdrasilberry", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "steel", "label": "steel", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "romantic_gent", "label": "romantic_gent", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "angel_s_reincarnation", "label": "angel_s_reincarnation", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "concentration_potion", "label": "concentration_potion", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "gentle_breeze_guitar", "label": "gentle_breeze_guitar", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "vocal_card", "label": "vocal_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "western_grace", "label": "western_grace", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "topaz", "label": "topaz", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "star_dust_blade", "label": "star_dust_blade", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "angelic_cardigan", "label": "angelic_cardigan", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "monster_juice", "label": "monster_juice", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "vagabond_wolf_card", "label": "vagabond_wolf_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "insect_peeling", "label": "insect_peeling", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "garlet", "label": "garlet", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "star_dust", "label": "star_dust", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rough_elunium", "label": "rough_elunium", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "andre_card", "label": "andre_card", "shape": "dot", "size": 10, "title": "Item dropado"}]);
+                  edges = new vis.DataSet([{"from": "fabre", "to": "fluff", "width": 1}, {"from": "fabre", "to": "feather", "width": 1}, {"from": "fabre", "to": "club", "width": 1}, {"from": "fabre", "to": "emerald", "width": 1}, {"from": "fabre", "to": "green_herb", "width": 1}, {"from": "fabre", "to": "clover", "width": 1}, {"from": "fabre", "to": "fabre_card", "width": 1}, {"from": "fluff", "to": "red_plant", "width": 1}, {"from": "fluff", "to": "yellow_plant", "width": 1}, {"from": "feather", "to": "black_mushroom", "width": 1}, {"from": "feather", "to": "red_mushroom", "width": 1}, {"from": "emerald", "to": "wormtail", "width": 1}, {"from": "emerald", "to": "vocal", "width": 1}, {"from": "green_herb", "to": "mandragora", "width": 1}, {"from": "green_herb", "to": "muka", "width": 1}, {"from": "green_herb", "to": "green_plant", "width": 1}, {"from": "pupa", "to": "phracon", "width": 1}, {"from": "pupa", "to": "chrysalis", "width": 1}, {"from": "pupa", "to": "sticky_mucus", "width": 1}, {"from": "pupa", "to": "guard", "width": 1}, {"from": "pupa", "to": "shell", "width": 1}, {"from": "pupa", "to": "iron_ore", "width": 1}, {"from": "pupa", "to": "pupa_card", "width": 1}, {"from": "sticky_mucus", "to": "andre", "width": 1}, {"from": "iron_ore", "to": "muka", "width": 1}, {"from": "iron_ore", "to": "andre", "width": 1}, {"from": "willow", "to": "tree_root", "width": 1}, {"from": "willow", "to": "trunk", "width": 1}, {"from": "willow", "to": "resin", "width": 1}, {"from": "willow", "to": "potato", "width": 1}, {"from": "willow", "to": "barren_trunk", "width": 1}, {"from": "willow", "to": "solid_trunk", "width": 1}, {"from": "willow", "to": "fine_grained_trunk", "width": 1}, {"from": "willow", "to": "willow_card", "width": 1}, {"from": "potato", "to": "smokie", "width": 1}, {"from": "potato", "to": "bigfoot", "width": 1}, {"from": "wolf", "to": "emveretarcon", "width": 1}, {"from": "wolf", "to": "wolf_claw", "width": 1}, {"from": "wolf", "to": "mantle", "width": 1}, {"from": "wolf", "to": "meat", "width": 1}, {"from": "wolf", "to": "monster_s_feed", "width": 1}, {"from": "wolf", "to": "animal_skin", "width": 1}, {"from": "wolf", "to": "strawberry", "width": 1}, {"from": "wolf", "to": "wolf_card", "width": 1}, {"from": "emveretarcon", "to": "wormtail", "width": 1}, {"from": "emveretarcon", "to": "boa", "width": 1}, {"from": "wolf_claw", "to": "vagabond_wolf", "width": 1}, {"from": "animal_skin", "to": "smokie", "width": 1}, {"from": "animal_skin", "to": "bigfoot", "width": 1}, {"from": "strawberry", "to": "boa", "width": 1}, {"from": "strawberry", "to": "yoyo", "width": 1}, {"from": "mandragora", "to": "green_live", "width": 1}, {"from": "mandragora", "to": "stem", "width": 1}, {"from": "mandragora", "to": "spear", "width": 1}, {"from": "mandragora", "to": "shoot", "width": 1}, {"from": "mandragora", "to": "four_leaf_clover", "width": 1}, {"from": "mandragora", "to": "gaia_whip", "width": 1}, {"from": "mandragora", "to": "mandragora_card", "width": 1}, {"from": "green_live", "to": "wormtail", "width": 1}, {"from": "green_live", "to": "muka", "width": 1}, {"from": "green_live", "to": "andre", "width": 1}, {"from": "stem", "to": "red_plant", "width": 1}, {"from": "stem", "to": "blue_plant", "width": 1}, {"from": "stem", "to": "green_plant", "width": 1}, {"from": "stem", "to": "yellow_plant", "width": 1}, {"from": "stem", "to": "white_plant", "width": 1}, {"from": "shoot", "to": "red_plant", "width": 1}, {"from": "shoot", "to": "blue_plant", "width": 1}, {"from": "shoot", "to": "yellow_plant", "width": 1}, {"from": "orc_warrior", "to": "iron", "width": 1}, {"from": "orc_warrior", "to": "orcish_voucher", "width": 1}, {"from": "orc_warrior", "to": "rough_oridecon", "width": 1}, {"from": "orc_warrior", "to": "cigarette", "width": 1}, {"from": "orc_warrior", "to": "battle_axe", "width": 1}, {"from": "orc_warrior", "to": "orcish_axe", "width": 1}, {"from": "orc_warrior", "to": "round_buckler", "width": 1}, {"from": "orc_warrior", "to": "orc_warrior_card", "width": 1}, {"from": "rough_oridecon", "to": "yoyo", "width": 1}, {"from": "rough_oridecon", "to": "bigfoot", "width": 1}, {"from": "wormtail", "to": "pointed_scale", "width": 1}, {"from": "wormtail", "to": "pike", "width": 1}, {"from": "wormtail", "to": "yellow_herb", "width": 1}, {"from": "wormtail", "to": "green_lace", "width": 1}, {"from": "wormtail", "to": "wormtail_card", "width": 1}, {"from": "pointed_scale", "to": "green_plant", "width": 1}, {"from": "yellow_herb", "to": "yoyo", "width": 1}, {"from": "yellow_herb", "to": "yellow_plant", "width": 1}, {"from": "boa", "to": "snake_scale", "width": 1}, {"from": "boa", "to": "katana", "width": 1}, {"from": "boa", "to": "red_herb", "width": 1}, {"from": "boa", "to": "venom_canine", "width": 1}, {"from": "boa", "to": "shining_scale", "width": 1}, {"from": "boa", "to": "snake_card", "width": 1}, {"from": "red_herb", "to": "muka", "width": 1}, {"from": "red_herb", "to": "red_plant", "width": 1}, {"from": "rocker", "to": "grasshopper_s_leg", "width": 1}, {"from": "rocker", "to": "green_acre_guitar", "width": 1}, {"from": "rocker", "to": "green_feeler", "width": 1}, {"from": "rocker", "to": "javelin", "width": 1}, {"from": "rocker", "to": "hinalle_leaflet", "width": 1}, {"from": "rocker", "to": "rocker_doll", "width": 1}, {"from": "rocker", "to": "hinalle", "width": 1}, {"from": "rocker", "to": "rocker_card", "width": 1}, {"from": "grasshopper_s_leg", "to": "vocal", "width": 1}, {"from": "rocker_doll", "to": "vocal", "width": 1}, {"from": "hinalle", "to": "white_plant", "width": 1}, {"from": "muka", "to": "cactus_needle", "width": 1}, {"from": "muka", "to": "empty_bottle", "width": 1}, {"from": "muka", "to": "guisarme", "width": 1}, {"from": "muka", "to": "muka_card", "width": 1}, {"from": "smokie", "to": "raccoon_leaf", "width": 1}, {"from": "smokie", "to": "kitty_band", "width": 1}, {"from": "smokie", "to": "racoon_doll", "width": 1}, {"from": "smokie", "to": "zargon", "width": 1}, {"from": "smokie", "to": "zircon", "width": 1}, {"from": "smokie", "to": "smokie_card", "width": 1}, {"from": "yoyo", "to": "yoyo_tail", "width": 1}, {"from": "yoyo", "to": "banana", "width": 1}, {"from": "yoyo", "to": "cacao", "width": 1}, {"from": "yoyo", "to": "yoyo_doll", "width": 1}, {"from": "yoyo", "to": "yoyo_card", "width": 1}, {"from": "bigfoot", "to": "bear_s_footskin", "width": 1}, {"from": "bigfoot", "to": "poo_poo_hat", "width": 1}, {"from": "bigfoot", "to": "puppet", "width": 1}, {"from": "bigfoot", "to": "honey", "width": 1}, {"from": "bigfoot", "to": "bigfoot_card", "width": 1}, {"from": "red_plant", "to": "flower", "width": 1}, {"from": "red_plant", "to": "poison_herb_rantana", "width": 1}, {"from": "red_plant", "to": "ment", "width": 1}, {"from": "red_plant", "to": "romantic_flower", "width": 1}, {"from": "flower", "to": "blue_plant", "width": 1}, {"from": "flower", "to": "yellow_plant", "width": 1}, {"from": "flower", "to": "white_plant", "width": 1}, {"from": "romantic_flower", "to": "yellow_plant", "width": 1}, {"from": "romantic_flower", "to": "white_plant", "width": 1}, {"from": "blue_plant", "to": "blue_herb", "width": 1}, {"from": "blue_plant", "to": "poison_herb_nerium", "width": 1}, {"from": "blue_plant", "to": "mastela_fruit", "width": 1}, {"from": "blue_plant", "to": "grape", "width": 1}, {"from": "blue_plant", "to": "romantic_leaf", "width": 1}, {"from": "romantic_leaf", "to": "green_plant", "width": 1}, {"from": "green_plant", "to": "poison_herb_makulata", "width": 1}, {"from": "green_plant", "to": "bitter_herb", "width": 1}, {"from": "green_plant", "to": "aloe", "width": 1}, {"from": "green_plant", "to": "aloe_leaflet", "width": 1}, {"from": "aloe_leaflet", "to": "white_plant", "width": 1}, {"from": "yellow_plant", "to": "poison_herb_amoena", "width": 1}, {"from": "yellow_plant", "to": "singing_plant", "width": 1}, {"from": "white_plant", "to": "white_herb", "width": 1}, {"from": "white_plant", "to": "deadly_noxious_herb", "width": 1}, {"from": "white_plant", "to": "poison_herb_seratum", "width": 1}, {"from": "black_mushroom", "to": "alcohol", "width": 1}, {"from": "black_mushroom", "to": "detrimindexta", "width": 1}, {"from": "black_mushroom", "to": "dew_laden_moss", "width": 1}, {"from": "black_mushroom", "to": "crystal_blue", "width": 1}, {"from": "black_mushroom", "to": "mushroom_spore", "width": 1}, {"from": "black_mushroom", "to": "poison_spore", "width": 1}, {"from": "alcohol", "to": "red_mushroom", "width": 1}, {"from": "dew_laden_moss", "to": "red_mushroom", "width": 1}, {"from": "mushroom_spore", "to": "red_mushroom", "width": 1}, {"from": "poison_spore", "to": "red_mushroom", "width": 1}, {"from": "red_mushroom", "to": "karvodailnirol", "width": 1}, {"from": "red_mushroom", "to": "red_blood", "width": 1}, {"from": "orc_hero", "to": "heroic_emblem", "width": 1}, {"from": "orc_hero", "to": "monkey_circlet", "width": 1}, {"from": "orc_hero", "to": "light_epsilon", "width": 1}, {"from": "orc_hero", "to": "shield", "width": 1}, {"from": "orc_hero", "to": "orcish_sword", "width": 1}, {"from": "orc_hero", "to": "elunium", "width": 1}, {"from": "orc_hero", "to": "giant_axe", "width": 1}, {"from": "orc_hero", "to": "orc_hero_card", "width": 1}, {"from": "orc_hero", "to": "sardonyx", "width": 1}, {"from": "orc_hero", "to": "yggdrasilberry", "width": 1}, {"from": "orc_hero", "to": "steel", "width": 1}, {"from": "sardonyx", "to": "vagabond_wolf", "width": 1}, {"from": "vocal", "to": "romantic_gent", "width": 1}, {"from": "vocal", "to": "angel_s_reincarnation", "width": 1}, {"from": "vocal", "to": "concentration_potion", "width": 1}, {"from": "vocal", "to": "gentle_breeze_guitar", "width": 1}, {"from": "vocal", "to": "vocal_card", "width": 1}, {"from": "vagabond_wolf", "to": "western_grace", "width": 1}, {"from": "vagabond_wolf", "to": "topaz", "width": 1}, {"from": "vagabond_wolf", "to": "star_dust_blade", "width": 1}, {"from": "vagabond_wolf", "to": "angelic_cardigan", "width": 1}, {"from": "vagabond_wolf", "to": "monster_juice", "width": 1}, {"from": "vagabond_wolf", "to": "vagabond_wolf_card", "width": 1}, {"from": "andre", "to": "insect_peeling", "width": 1}, {"from": "andre", "to": "garlet", "width": 1}, {"from": "andre", "to": "star_dust", "width": 1}, {"from": "andre", "to": "rough_elunium", "width": 1}, {"from": "andre", "to": "andre_card", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 200,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

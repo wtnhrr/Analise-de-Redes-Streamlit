@@ -1,0 +1,178 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 750px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": "mob", "id": "anacondaq", "label": "anacondaq", "shape": "dot", "size": 10, "title": "Level: 100"}, {"font": {"color": "white"}, "group": "item", "id": "white_powder", "label": "white_powder", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "venom_canine", "label": "venom_canine", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "", "label": "", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "glaive", "label": "glaive", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "crimson_lance", "label": "crimson_lance", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "snake_scale", "label": "snake_scale", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "scale_shell", "label": "scale_shell", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yellow_herb", "label": "yellow_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "doram_suit", "label": "doram_suit", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rough_oridecon", "label": "rough_oridecon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "anacondaq_card", "label": "anacondaq_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "side_winder", "label": "side_winder", "shape": "dot", "size": 10, "title": "Level: 70"}, {"font": {"color": "white"}, "group": "item", "id": "shining_scale", "label": "shining_scale", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "zargon", "label": "zargon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "tsurugi", "label": "tsurugi", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "white_herb", "label": "white_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "sidewinder_card", "label": "sidewinder_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "argiope", "label": "argiope", "shape": "dot", "size": 10, "title": "Level: 75"}, {"font": {"color": "white"}, "group": "mob", "id": "angeling", "label": "angeling", "shape": "dot", "size": 10, "title": "Level: 77"}, {"font": {"color": "white"}, "group": "mob", "id": "baphomet", "label": "baphomet", "shape": "dot", "size": 10, "title": "Level: 81"}, {"font": {"color": "white"}, "group": "item", "id": "crescent_scythe", "label": "crescent_scythe", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "magestic_goat", "label": "magestic_goat", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "emperium", "label": "emperium", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "elunium", "label": "elunium", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "oridecon", "label": "oridecon", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "baphomet_card", "label": "baphomet_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yggdrasilberry", "label": "yggdrasilberry", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "baphomet_doll", "label": "baphomet_doll", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "evil_horn", "label": "evil_horn", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "doppelganger", "label": "doppelganger", "shape": "dot", "size": 10, "title": "Level: 77"}, {"font": {"color": "white"}, "group": "mob", "id": "mistress", "label": "mistress", "shape": "dot", "size": 10, "title": "Level: 78"}, {"font": {"color": "white"}, "group": "mob", "id": "anubis", "label": "anubis", "shape": "dot", "size": 10, "title": "Level: 105"}, {"font": {"color": "white"}, "group": "item", "id": "full_plate", "label": "full_plate", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "broadsword", "label": "broadsword", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "zweihander", "label": "zweihander", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "spiky_band", "label": "spiky_band", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "lance", "label": "lance", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "doppelganger_card", "label": "doppelganger_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "cursed_ruby", "label": "cursed_ruby", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "blue_potion", "label": "blue_potion", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "gungnir", "label": "gungnir", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "honey", "label": "honey", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "coronet", "label": "coronet", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "old_card_album", "label": "old_card_album", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "young_twig", "label": "young_twig", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "red_square_bag", "label": "red_square_bag", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "mistress_card", "label": "mistress_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rough_wind", "label": "rough_wind", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "royal_jelly", "label": "royal_jelly", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "pearl", "label": "pearl", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "kaho", "label": "kaho", "shape": "dot", "size": 10, "title": "Level: 98"}, {"font": {"color": "white"}, "group": "item", "id": "flame_heart", "label": "flame_heart", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "coal", "label": "coal", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "burning_heart", "label": "burning_heart", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "level_fire_bolt", "label": "level_fire_bolt", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "rough_elunium", "label": "rough_elunium", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "red_gemstone", "label": "red_gemstone", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "alcohol", "label": "alcohol", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "kaho_card", "label": "kaho_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "mob", "id": "vagabond_wolf", "label": "vagabond_wolf", "shape": "dot", "size": 10, "title": "Level: 93"}, {"font": {"color": "white"}, "group": "item", "id": "western_grace", "label": "western_grace", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "wolf_claw", "label": "wolf_claw", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "topaz", "label": "topaz", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "star_dust_blade", "label": "star_dust_blade", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "angelic_cardigan", "label": "angelic_cardigan", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "sardonyx", "label": "sardonyx", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "monster_juice", "label": "monster_juice", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "vagabond_wolf_card", "label": "vagabond_wolf_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "angel_wing", "label": "angel_wing", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "scapulare", "label": "scapulare", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "yggdrasil_leaf", "label": "yggdrasil_leaf", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "halo", "label": "halo", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "apple", "label": "apple", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "angeling_card", "label": "angeling_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "ancient_rough_runestone", "label": "ancient_rough_runestone", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "healing_staff", "label": "healing_staff", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "memento", "label": "memento", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "cultish_masque", "label": "cultish_masque", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "celebrant_s_mitten", "label": "celebrant_s_mitten", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "wand_of_occult", "label": "wand_of_occult", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "anubis_card", "label": "anubis_card", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "bug_leg", "label": "bug_leg", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "boots", "label": "boots", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "green_herb", "label": "green_herb", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "amethyst", "label": "amethyst", "shape": "dot", "size": 10, "title": "Item dropado"}, {"font": {"color": "white"}, "group": "item", "id": "argiope_card", "label": "argiope_card", "shape": "dot", "size": 10, "title": "Item dropado"}]);
+                  edges = new vis.DataSet([{"from": "anacondaq", "to": "white_powder", "width": 1}, {"from": "anacondaq", "to": "venom_canine", "width": 1}, {"from": "anacondaq", "to": "", "width": 1}, {"from": "anacondaq", "to": "glaive", "width": 1}, {"from": "anacondaq", "to": "crimson_lance", "width": 1}, {"from": "anacondaq", "to": "snake_scale", "width": 1}, {"from": "anacondaq", "to": "scale_shell", "width": 1}, {"from": "anacondaq", "to": "yellow_herb", "width": 1}, {"from": "anacondaq", "to": "doram_suit", "width": 1}, {"from": "anacondaq", "to": "rough_oridecon", "width": 1}, {"from": "anacondaq", "to": "anacondaq_card", "width": 1}, {"from": "venom_canine", "to": "side_winder", "width": 1}, {"from": "snake_scale", "to": "side_winder", "width": 1}, {"from": "rough_oridecon", "to": "side_winder", "width": 1}, {"from": "side_winder", "to": "shining_scale", "width": 1}, {"from": "side_winder", "to": "zargon", "width": 1}, {"from": "side_winder", "to": "tsurugi", "width": 1}, {"from": "side_winder", "to": "white_herb", "width": 1}, {"from": "side_winder", "to": "sidewinder_card", "width": 1}, {"from": "zargon", "to": "argiope", "width": 1}, {"from": "white_herb", "to": "angeling", "width": 1}, {"from": "baphomet", "to": "crescent_scythe", "width": 1}, {"from": "baphomet", "to": "magestic_goat", "width": 1}, {"from": "baphomet", "to": "emperium", "width": 1}, {"from": "baphomet", "to": "elunium", "width": 1}, {"from": "baphomet", "to": "oridecon", "width": 1}, {"from": "baphomet", "to": "baphomet_card", "width": 1}, {"from": "baphomet", "to": "yggdrasilberry", "width": 1}, {"from": "baphomet", "to": "baphomet_doll", "width": 1}, {"from": "baphomet", "to": "evil_horn", "width": 1}, {"from": "emperium", "to": "angeling", "width": 1}, {"from": "elunium", "to": "doppelganger", "width": 1}, {"from": "elunium", "to": "mistress", "width": 1}, {"from": "oridecon", "to": "doppelganger", "width": 1}, {"from": "oridecon", "to": "anubis", "width": 1}, {"from": "doppelganger", "to": "full_plate", "width": 1}, {"from": "doppelganger", "to": "broadsword", "width": 1}, {"from": "doppelganger", "to": "zweihander", "width": 1}, {"from": "doppelganger", "to": "spiky_band", "width": 1}, {"from": "doppelganger", "to": "lance", "width": 1}, {"from": "doppelganger", "to": "doppelganger_card", "width": 1}, {"from": "doppelganger", "to": "cursed_ruby", "width": 1}, {"from": "doppelganger", "to": "blue_potion", "width": 1}, {"from": "mistress", "to": "gungnir", "width": 1}, {"from": "mistress", "to": "honey", "width": 1}, {"from": "mistress", "to": "coronet", "width": 1}, {"from": "mistress", "to": "old_card_album", "width": 1}, {"from": "mistress", "to": "young_twig", "width": 1}, {"from": "mistress", "to": "red_square_bag", "width": 1}, {"from": "mistress", "to": "mistress_card", "width": 1}, {"from": "mistress", "to": "rough_wind", "width": 1}, {"from": "mistress", "to": "royal_jelly", "width": 1}, {"from": "mistress", "to": "pearl", "width": 1}, {"from": "kaho", "to": "flame_heart", "width": 1}, {"from": "kaho", "to": "coal", "width": 1}, {"from": "kaho", "to": "burning_heart", "width": 1}, {"from": "kaho", "to": "level_fire_bolt", "width": 1}, {"from": "kaho", "to": "rough_elunium", "width": 1}, {"from": "kaho", "to": "red_gemstone", "width": 1}, {"from": "kaho", "to": "alcohol", "width": 1}, {"from": "kaho", "to": "kaho_card", "width": 1}, {"from": "rough_elunium", "to": "argiope", "width": 1}, {"from": "vagabond_wolf", "to": "western_grace", "width": 1}, {"from": "vagabond_wolf", "to": "wolf_claw", "width": 1}, {"from": "vagabond_wolf", "to": "topaz", "width": 1}, {"from": "vagabond_wolf", "to": "star_dust_blade", "width": 1}, {"from": "vagabond_wolf", "to": "angelic_cardigan", "width": 1}, {"from": "vagabond_wolf", "to": "sardonyx", "width": 1}, {"from": "vagabond_wolf", "to": "monster_juice", "width": 1}, {"from": "vagabond_wolf", "to": "vagabond_wolf_card", "width": 1}, {"from": "angeling", "to": "angel_wing", "width": 1}, {"from": "angeling", "to": "scapulare", "width": 1}, {"from": "angeling", "to": "yggdrasil_leaf", "width": 1}, {"from": "angeling", "to": "halo", "width": 1}, {"from": "angeling", "to": "apple", "width": 1}, {"from": "angeling", "to": "angeling_card", "width": 1}, {"from": "anubis", "to": "ancient_rough_runestone", "width": 1}, {"from": "anubis", "to": "healing_staff", "width": 1}, {"from": "anubis", "to": "memento", "width": 1}, {"from": "anubis", "to": "cultish_masque", "width": 1}, {"from": "anubis", "to": "celebrant_s_mitten", "width": 1}, {"from": "anubis", "to": "wand_of_occult", "width": 1}, {"from": "anubis", "to": "anubis_card", "width": 1}, {"from": "argiope", "to": "bug_leg", "width": 1}, {"from": "argiope", "to": "boots", "width": 1}, {"from": "argiope", "to": "green_herb", "width": 1}, {"from": "argiope", "to": "amethyst", "width": 1}, {"from": "argiope", "to": "argiope_card", "width": 1}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "repulsion": {
+            "centralGravity": 0.2,
+            "damping": 0.09,
+            "nodeDistance": 200,
+            "springConstant": 0.05,
+            "springLength": 200
+        },
+        "solver": "repulsion",
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>

@@ -3,6 +3,7 @@ import requests
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
+import community as community_louvain
 from pyvis.network import Network
 import streamlit.components.v1 as components
 import os
@@ -261,3 +262,128 @@ with st.expander("⭐ Centralidade dos Nós", expanded=False):
                 st.table(df_central)
             except nx.NetworkXException:
                 st.warning("❌ Eigenvector não convergiu.")
+
+# MATRIZ DE ADJACÊNCIA PERSONALIZÁVEL
+
+with st.expander("🔢 Matriz de Adjacência (Personalizável)"):
+    st.markdown("""
+    A matriz de adjacência representa conexões entre nós do grafo. 
+    Você pode selecionar os nós que deseja visualizar abaixo.
+    """)
+    
+    todos_nos = list(G.nodes())
+    nos_selecionados = st.multiselect(
+        "Selecione até 30 nós para exibir na matriz:",
+        options=todos_nos,
+        default=todos_nos[:10],
+        max_selections=30,
+    )
+
+    if len(nos_selecionados) > 0:
+        submatriz = nx.to_numpy_array(G, nodelist=nos_selecionados)
+        df_sub = pd.DataFrame(submatriz, index=nos_selecionados, columns=nos_selecionados)
+        st.dataframe(df_sub.style.background_gradient(cmap="Blues"), use_container_width=True)
+    else:
+        st.warning("Selecione pelo menos um nó para visualizar a matriz.")
+
+# DIÂMETRO E PERIFERIA DA REDE
+
+with st.expander("📏 Diâmetro e Periferia da Rede"):
+    st.markdown("""
+    **Diâmetro** é a maior distância mínima entre pares de nós.  
+    **Periferia** é o conjunto de nós que estão exatamente nessa distância.
+    """)
+
+    if G.number_of_nodes() > 0:
+        G_und = G.to_undirected()
+        if nx.is_connected(G_und):
+            diam = nx.diameter(G_und)
+            perif = nx.periphery(G_und)
+            st.write(f"- **Diâmetro da rede (não direcionada):** {diam}")
+            st.write(f"- **Nós na periferia (total {len(perif)}):** {perif}")
+        else:
+            comps = list(nx.connected_components(G_und))
+            maior = max(comps, key=len)
+            GU = G_und.subgraph(maior).copy()
+            diam = nx.diameter(GU)
+            perif = nx.periphery(GU)
+            st.warning(f"O grafo não está totalmente conectado: exibindo para o maior componente (nós={len(maior)})")
+            st.write(f"- **Diâmetro do maior componente:** {diam}")
+            st.write(f"- **Nós na periferia desse componente:** {perif}")
+    else:
+        st.write("Grafo vazio — gere o grafo primeiro.")
+
+# DETECÇÃO DE COMUNIDADES (LOUVAIN)
+
+with st.expander("🧩 Detecção de Comunidades (Louvain)"):
+    st.markdown("""
+    O algoritmo de **Louvain** agrupa nós de forma a maximizar a **modularidade**.
+    Cada comunidade possui nós mais densamente conectados entre si.
+    """)
+
+    if G.number_of_nodes() > 0:
+        G_und = G.to_undirected()
+        particao = community_louvain.best_partition(G_und)
+        modularidade = community_louvain.modularity(particao, G_und)
+
+        # tabela com tamanho de cada comunidade
+        contagem = pd.Series(particao).value_counts().sort_index()
+        df_com = pd.DataFrame({
+            "Comunidade": contagem.index,
+            "Tamanho": contagem.values
+        })
+        st.write(f"**Modularidade da Partição:** {modularidade:.4f}")
+        st.table(df_com)
+
+        # visualização gráfica das comunidades
+        pos = nx.spring_layout(G_und, seed=42)
+        cores = [particao[n] for n in G_und.nodes()]
+        fig, ax = plt.subplots(figsize=(8, 6))
+        nx.draw_networkx_nodes(G_und, pos, node_color=cores, cmap=plt.cm.tab10, node_size=50, ax=ax)
+        nx.draw_networkx_edges(G_und, pos, alpha=0.2, ax=ax)
+        ax.set_title("Comunidades detectadas (Louvain)")
+        ax.axis("off")
+        st.pyplot(fig)
+    else:
+        st.write("🔸 Gere o grafo antes de detectar comunidades.")
+
+# COMPARAÇÃO COM REDES TEÓRICAS
+
+with st.expander("🔍 Comparação com Redes Teóricas"):
+    st.markdown("""
+    Comparativo entre a rede real e três modelos clássicos:
+    - **Erdős‑Rényi (ER)** — conexões aleatórias
+    - **Small‑World (SW)** — alta clusterização
+    - **Barabási‑Albert (BA)** — hubs emergentes
+    """)
+
+    if G.number_of_nodes() > 0:
+        n = G.number_of_nodes()
+        m = G.number_of_edges()
+
+        ER = nx.erdos_renyi_graph(n, p=m/(n*(n-1)))
+        SW = nx.watts_strogatz_graph(n, k=max(2, int(2*m/n)), p=0.1)
+        BA = nx.barabasi_albert_graph(n, m=max(1, int(m/n)))
+
+        def calc_metric(rede):
+            G_und = rede.to_undirected()
+            return {
+                "Nós": G_und.number_of_nodes(),
+                "Arestas": G_und.number_of_edges(),
+                "Densidade": f"{nx.density(G_und):.4f}",
+                "Clustering médio": f"{nx.average_clustering(G_und):.4f}",
+                "Caminho médio": f"{nx.average_shortest_path_length(G_und):.4f}" if nx.is_connected(G_und) else "N/A",
+                "Diâmetro": f"{nx.diameter(G_und):.0f}" if nx.is_connected(G_und) else "N/A"
+            }
+
+        comparativo = {
+            "Rede Real": calc_metric(G),
+            "Erdős‑Rényi": calc_metric(ER),
+            "Small‑World": calc_metric(SW),
+            "Barabási‑Albert": calc_metric(BA),
+        }
+
+        df_comp = pd.DataFrame(comparativo).T
+        st.table(df_comp)
+    else:
+        st.write("Gere o grafo primeiro para comparar com os modelos.")
